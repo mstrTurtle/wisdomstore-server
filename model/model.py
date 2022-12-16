@@ -100,9 +100,9 @@ class Product(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
-    price: Mapped[str] = mapped_column(String(30))
+    price: Mapped[float]
     category: Mapped[str] = mapped_column(String(30))
-    stock: Mapped[str] = mapped_column(String(30))
+    stock: Mapped[int]
     imgurl: Mapped[Optional[str]]
     description: Mapped[Optional[str]]
 

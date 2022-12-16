@@ -130,7 +130,7 @@ async def login(name, password):
 
 
 @app.get('/product/add')
-async def product(name,price,category,stock,imgurl,description):
+async def product(name,price:float,category,stock:int,imgurl,description):
     try:
         productDto.addProduct(name,price,category,stock,imgurl,description)
     except Exception as e:
@@ -142,6 +142,5 @@ async def productSearch(name):
     try:
         a = productDto.searchProduct(name)
     except Exception as e:
-        raise e
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok', 'products':a}
