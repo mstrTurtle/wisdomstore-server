@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 
 
-def createMemoryEngine():
+def __createMemoryEngine():
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True, echo=True)
     with engine.connect() as conn:
         result = conn.execute(text("select 'hello world'"))
@@ -9,8 +9,13 @@ def createMemoryEngine():
     
     return engine
 
-def createAll(Base, engine):
+def __createAll(Base, engine):
     Base.metadata.create_all(engine)
+
+def createEngineWithCreateAll(Base):
+    engine=__createMemoryEngine()
+    __createAll(Base = Base,engine = engine)
+    return engine
 
 from datetime import datetime, timezone
 from sqlalchemy import ForeignKey, String
@@ -110,7 +115,7 @@ class Product(Base):
     )
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
+        return f"User(id={self.id!r}, name={self.name!r}"
 
 # 一次下单的信息. 包括订单进度.
 class Order(Base):
@@ -182,4 +187,9 @@ class Visit(Base):
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
 
+class Picture(Base):
+    __tablename__ = "picture"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
+    uuidName: Mapped[str] = mapped_column(String(100))
+    originalName: Mapped[Optional[str]]
