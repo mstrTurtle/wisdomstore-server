@@ -1,12 +1,16 @@
-from sqlalchemy import create_engine
-engine = create_engine("sqlite+pysqlite:///:memory:", future=True, echo=True)
+from sqlalchemy import create_engine, text
 
-from sqlalchemy import text
 
-with engine.connect() as conn:
-    result = conn.execute(text("select 'hello world'"))
-    print(result.all())
+def createMemoryEngine():
+    engine = create_engine("sqlite+pysqlite:///:memory:", future=True, echo=True)
+    with engine.connect() as conn:
+        result = conn.execute(text("select 'hello world'"))
+        print(result.all())
+    
+    return engine
 
+def createAll(Base, engine):
+    Base.metadata.create_all(engine)
 
 from datetime import datetime, timezone
 from sqlalchemy import ForeignKey, String
@@ -178,5 +182,4 @@ class Visit(Base):
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
 
-def createAll():
-    Base.metadata.create_all(engine)
+
