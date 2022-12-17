@@ -3,6 +3,7 @@ from fastapi import Request, FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 
 from pydantic import BaseModel
+from dto.cartDto import cartDto
 
 # from model.model import createEngineWithCreateAll, Base
 from dto.dto import Dto, dto
@@ -89,6 +90,9 @@ async def upload(file: UploadFile = File(...)):
 },)
 async def pic(fname):
     '''获得文件API'''
+    print(fname)
+    print('ahaha')
+    print(getFileDir(fname))
     return getFileDir(fname)
 
 @app.get('/register')
@@ -117,7 +121,7 @@ async def login(name, password):
         if not user:
             return {'status':'Fail','reason':'user not found'}
         elif user.password == password:
-            return {'status':'Ok','name':name}
+            return {'status':'Ok','name':name,'user_id':user.id}
         else:
             return {'status':'Fail'}
         return ret
@@ -137,6 +141,14 @@ async def product(name,price:float,category,stock:int,imgurl,description):
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok'}
 
+@app.get('/product')
+async def product(id:int):
+    try:
+        d = productDto.getProductById(id)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok','detail':d}
+
 @app.get('/product/search')
 async def productSearch(name):
     try:
@@ -144,3 +156,19 @@ async def productSearch(name):
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok', 'products':a}
+
+@app.get('/cart')
+async def getCart(user_id:int):
+    try:
+        a = cartDto.getAllCartItemsByUserId(user_id=user_id)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok', 'cartItems':a}
+
+@app.get('/cart/add')
+async def addCartItem(user_id:int, product_id:int, count:int):
+    try:
+        a = cartDto.addCartItem(user_id=user_id, product_id=product_id, count=count)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok', 'cartItems':a}

@@ -12,9 +12,13 @@ def __createMemoryEngine():
 def __createAll(Base, engine):
     Base.metadata.create_all(engine)
 
+engine = None
+
 def createEngineWithCreateAll(Base):
-    engine=__createMemoryEngine()
-    __createAll(Base = Base,engine = engine)
+    global engine
+    if not engine:
+        engine=__createMemoryEngine()
+        __createAll(Base = Base,engine = engine)
     return engine
 
 from datetime import datetime, timezone
@@ -72,19 +76,18 @@ class CartItem(Base):
     '''
     2. CartItem表
     CartItem <- User
+    CartItem - Product
     '''
     __tablename__ = "cart_item"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    price: Mapped[str] = mapped_column(String(30))
-    category: Mapped[str] = mapped_column(String(30))
-    stock: Mapped[str] = mapped_column(String(30))
-    imgurl: Mapped[Optional[str]]
-    description: Mapped[Optional[str]]
+    count : Mapped[int]
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+    product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))
 
     user: Mapped['User'] = relationship(back_populates="cartItems")
+
+    product: Mapped['Product'] = relationship(back_populates="cartItem")
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
@@ -95,6 +98,7 @@ class Product(Base):
     3. Product表.
     Product -> Visit
     Product -> OrderItem
+    Product - CartItem
     '''
     __tablename__ = "product"
 
@@ -113,6 +117,8 @@ class Product(Base):
     orderItems: Mapped[list["OrderItem"]] = relationship(
         back_populates="product", cascade="all, delete-orphan"
     )
+
+    cartItem: Mapped["CartItem"] = relationship(back_populates="product")
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}"
@@ -155,8 +161,8 @@ class OrderItem(Base):
     __tablename__ = "order_item"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    orderId: Mapped[str] = mapped_column(String(30))
-    productId: Mapped[str] = mapped_column(String(30))
+    name: Mapped[str] = mapped_column(String(30))
+    price: Mapped[str] = mapped_column(String(30))
     buyNum: Mapped[Optional[str]]
     order_id: Mapped[int] = mapped_column(ForeignKey("order.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))

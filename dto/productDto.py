@@ -19,8 +19,16 @@ class ProductDto:
         with Session(self.engine) as session:
             result = session.query(Product).filter(Product.name.ilike(f'%{name}%')).all()
             for row in result:
-                ret.append({'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
+                ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
             return ret
+    
+    def getProductById(self,id):
+        with Session(self.engine) as session:
+            row = session.query(Product).get(id)
+            if row:
+                return {'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description}
+            else:
+                return None
 
 from model.model import createEngineWithCreateAll, Base
 
