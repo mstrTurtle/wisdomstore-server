@@ -22,13 +22,21 @@ class ProductDto:
                 ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
             return ret
     
+    def getAllProduct(self):
+        ret = []
+        with Session(self.engine) as session:
+            result = session.query(Product).all()
+            for row in result:
+                ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
+            return ret
+    
     def getProductById(self,id):
         with Session(self.engine) as session:
             row = session.query(Product).get(id)
             if row:
                 return {'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description}
             else:
-                return None
+                raise Exception
 
 from model.model import createEngineWithCreateAll, Base
 

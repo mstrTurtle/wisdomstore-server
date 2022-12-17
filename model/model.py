@@ -136,9 +136,8 @@ class Order(Base):
     receiverAddress: Mapped[str] = mapped_column(String(30))
     receiverName: Mapped[str] = mapped_column(String(30))
     receiverPhone: Mapped[str] = mapped_column(String(30))
-    payExpressState: Mapped[str] = mapped_column(String(30))
     createTime: Mapped[str] = mapped_column(String(30))
-    finishTime: Mapped[str] = mapped_column(String(30))
+    finishTime: Mapped[Optional[str]] = mapped_column(String(30))
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
 
     user: Mapped['User'] = relationship(back_populates="orders")
@@ -163,7 +162,7 @@ class OrderItem(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
     price: Mapped[str] = mapped_column(String(30))
-    buyNum: Mapped[Optional[str]]
+    count: Mapped[int]
     order_id: Mapped[int] = mapped_column(ForeignKey("order.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))
 
@@ -182,7 +181,6 @@ class Visit(Base):
     __tablename__ = "visit"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    productId: Mapped[str] = mapped_column(String(30))
     visitTime: Mapped[Optional[str]]
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))

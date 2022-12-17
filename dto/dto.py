@@ -9,6 +9,11 @@ class Dto:
         self.engine = engine
 
     def addUser(self,name,password,email,role):
+        with Session(self.engine) as session:
+            a = session.query(User).filter_by(name=name).all()
+            if a:
+               raise Exception
+
         user = User(name=name,password=password,email=email,role=role)
         with Session(self.engine) as session:
             session.add(user)

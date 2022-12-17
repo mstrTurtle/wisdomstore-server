@@ -29,13 +29,21 @@ class CartDto:
         with Session(self.engine) as session:
             session.add(cartItem)
             session.commit()
+    def removeCartItem(self,user_id, product_id):
+        with Session(self.engine) as session:
+            a = session.query(CartItem).filter_by(user_id=user_id,product_id=product_id).one()
+            if a:
+                session.delete(a)
+            else:
+                raise Exception('Item Not Found')
+            session.commit()
     
     def getAllCartItemsByUserId(self, user_id):
         with Session(self.engine) as session:
             result = session.query(CartItem).filter_by(user_id=user_id)
             ret = []
             for row in result:
-                ret.append( {'id':row.id, 'product_id':row.product_id, 'count': row.count})
+                ret.append( {'id':row.id, 'product_id':row.product_id, 'count': row.count, 'name': row.product.name, 'price': row.product.price})
         return ret
 
 from model.model import createEngineWithCreateAll, Base
