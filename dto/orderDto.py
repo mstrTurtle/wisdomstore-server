@@ -45,19 +45,31 @@ class OrderDto:
                 raise Exception('Cannot finish twice')
             a.finishTime = datetime.now().isoformat()
             session.commit()
+    
+    def unFinishOrder(self,order_id):
+        with Session(self.engine) as session:
+            a = session.query(Order).get(order_id)
+            if not a:
+                raise Exception('Order Not Found')
+            if not a.finishTime:
+                raise Exception('Cannot unfinish twice')
+            a.finishTime = None
+            session.commit()
 
     def getOrderDetailByUserId(self,user_id):
         with Session(self.engine) as session:
             orders = session.query(Order).filter_by(user_id=user_id).all()
             ret = []
             for order in orders:
-                d = ({'addr':order.receiverAddress,
-                'name':order.receiverName,
-                'phone':order.receiverPhone,
-                'createTime': order.createTime,
-                'finishTime':order.finishTime,
-                'user_id':order.user_id,
-                'items':[]})
+                d = ({
+                    'id':order.id,
+                    'addr':order.receiverAddress,
+                    'name':order.receiverName,
+                    'phone':order.receiverPhone,
+                    'createTime': order.createTime,
+                    'finishTime':order.finishTime,
+                    'user_id':order.user_id,
+                    'items':[]})
                 for item in order.orderItems:
                     d['items'].append({
                         'name':item.name,
@@ -74,13 +86,15 @@ class OrderDto:
             orders = session.query(Order).all()
             ret = []
             for order in orders:
-                d = ({'addr':order.receiverAddress,
-                'name':order.receiverName,
-                'phone':order.receiverPhone,
-                'createTime': order.createTime,
-                'finishTime':order.finishTime,
-                'user_id':order.user_id,
-                'items':[]})
+                d = ({
+                    'id':order.id,
+                    'addr':order.receiverAddress,
+                    'name':order.receiverName,
+                    'phone':order.receiverPhone,
+                    'createTime': order.createTime,
+                    'finishTime':order.finishTime,
+                    'user_id':order.user_id,
+                    'items':[]})
                 for item in order.orderItems:
                     d['items'].append({
                         'name':item.name,

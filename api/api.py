@@ -34,7 +34,8 @@ data_dir = './data'
 i = 0
 
 dto.addUser('xjy','123','qq769711153@hotmail.com','common')
-productDto.addProduct('神奇药水',44,'药水',10,'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg','很神奇的药水')
+productDto.addProduct('神奇药水',44,'药水',10,'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F1265897-ba0d898c63e4c821.jpg&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673947450&t=31ce12dd8d0bf22e509f7ef55b9e9c3d','很神奇的药水')
+productDto.addProduct('本草纲目',30,'医书',10,'http://collection.sinaimg.cn/yjjj/20131225/U5826P1081T2D138067F6DT20131225081830.jpg','神奇的医书')
 cartDto.addCartItem(1,1,4)
 visitDto.addVisit(1,1)
 orderDto.createOrder(1,'USA','JoeBiden','911')
@@ -171,6 +172,22 @@ async def productSearch(name):
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok', 'products':a}
 
+@app.get('/product/update')
+async def productUpdate(product_id, name,price,category,stock,imgurl,description):
+    try:
+        productDto.updateProduct(product_id, name,price,category,stock,imgurl,description)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok' }
+
+@app.get('/product/delete')
+async def productDelete(product_id):
+    try:
+        productDto.deleteProduct(product_id)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok' }
+
 @app.get('/cart')
 async def getCart(user_id:int):
     try:
@@ -215,7 +232,7 @@ async def visitAll():
 @app.get('/order/create')
 async def orderCreate(user_id, addr, name, phone):
     try:
-        return orderDto.createOrder(user_id, addr, name, phone)
+        orderDto.createOrder(user_id, addr, name, phone)
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok'}
@@ -224,6 +241,14 @@ async def orderCreate(user_id, addr, name, phone):
 async def orderFinish(order_id:int):
     try:
         return orderDto.finishOrder(order_id)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok'}
+
+@app.get('/order/unfinish')
+async def orderFinish(order_id:int):
+    try:
+        return orderDto.unFinishOrder(order_id)
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok'}
@@ -274,3 +299,11 @@ async def get_csv():
     response.headers["Content-Disposition"] = "attachment; filename=export.csv"
 
     return response
+    
+@app.get('/product/category')
+async def productByCategory(category):
+    try:
+        d= productDto.getAllProductByCategory(category=category)
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok', 'products':d}

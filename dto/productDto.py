@@ -13,11 +13,42 @@ class ProductDto:
         with Session(self.engine) as session:
             session.add(product)
             session.commit()
+    
+    def deleteProduct(self,product_id):
+        with Session(self.engine) as session:
+            product = session.query(Product).get(product_id)
+            if not product:
+                raise Exception('Product Not Found')
+            session.delete(product)
+            session.commit()
+
+    def updateProduct(self,product_id, name,price,category,stock,imgurl,description):
+        with Session(self.engine) as session:
+            product = session.query(Product).get(product_id)
+            if not product:
+                raise Exception('Product Not Found')
+            product.name=name
+            product.price=price
+            product.category=category
+            product.stock=stock
+            product.imgurl=imgurl
+            product.description=description
+            session.commit()
+    
+
 
     def searchProduct(self,name):
         ret = []
         with Session(self.engine) as session:
             result = session.query(Product).filter(Product.name.ilike(f'%{name}%')).all()
+            for row in result:
+                ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
+            return ret
+    
+    def getAllProductByCategory(self,category):
+        ret = []
+        with Session(self.engine) as session:
+            result = session.query(Product).filter_by(category=category).all()
             for row in result:
                 ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description})
             return ret
