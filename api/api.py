@@ -37,6 +37,8 @@ dto.addUser('xjy','123','qq769711153@hotmail.com','common')
 productDto.addProduct('神奇药水',44,'药水',10,'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F1265897-ba0d898c63e4c821.jpg&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673947450&t=31ce12dd8d0bf22e509f7ef55b9e9c3d','很神奇的药水')
 productDto.addProduct('本草纲目',30,'医书',10,'http://collection.sinaimg.cn/yjjj/20131225/U5826P1081T2D138067F6DT20131225081830.jpg','神奇的医书')
 cartDto.addCartItem(1,1,4)
+productDto.addProduct('神奇宝贝',20,'药水',10,'https://img0.baidu.com/it/u=4200801468,2758986524&fm=253&fmt=auto&app=138&f=JPEG?w=300&h=244','一个日本动漫卡通人物')
+cartDto.addCartItem(1,1,4)
 visitDto.addVisit(1,1)
 orderDto.createOrder(1,'USA','JoeBiden','911')
 
