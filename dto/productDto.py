@@ -37,6 +37,15 @@ class ProductDto:
                 return {'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description}
             else:
                 raise Exception
+    
+    def getAllRank(self):
+        ret = []
+        with Session(self.engine) as session:
+            result = session.query(Product).order_by(Product.sale.desc()).all()
+            for row in result:
+                ret.append({'id':row.id,'name':row.name,'price':row.price,'category':row.category,'stock':row.stock,'imgurl':row.imgurl,'description':row.description, 'sale':row.sale})
+            return ret
+
 
 from model.model import createEngineWithCreateAll, Base
 

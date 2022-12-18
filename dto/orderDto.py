@@ -31,16 +31,20 @@ class OrderDto:
                     order_id=order.id,
                     product_id=item.product_id
                     )
+                item.product.sale += 1
                 session.add(a)
+                session.delete(item) # 记得把购物车项目删除掉
             session.commit()
 
-        def finishOrder(self,order_id):
-            with Session(self.engine) as session:
-                a = session.query(Order).get(order_id)
-                if not a:
-                    raise Exception('Order Not Found')
-                a.finishTime = datetime.now().isoformat()
-                session.commit()
+    def finishOrder(self,order_id):
+        with Session(self.engine) as session:
+            a = session.query(Order).get(order_id)
+            if not a:
+                raise Exception('Order Not Found')
+            if a.finishTime:
+                raise Exception('Cannot finish twice')
+            a.finishTime = datetime.now().isoformat()
+            session.commit()
 
     def getOrderDetailByUserId(self,user_id):
         with Session(self.engine) as session:

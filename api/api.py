@@ -1,6 +1,6 @@
 import uuid
 from fastapi import Request, FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 from pydantic import BaseModel
 from dto.cartDto import cartDto
@@ -243,3 +243,34 @@ async def orderByUserId(user_id:int):
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
     return {'status':'Ok'}
+
+@app.get('/rank/all')
+async def getAllRank():
+    try:
+        return productDto.getAllRank()
+    except Exception as e:
+        return {'status':'Fail','reason':repr(e)}
+    return {'status':'Ok'}
+
+import io
+import csv
+    
+@app.get("/get_csv")
+async def get_csv():
+
+
+    stream = io.StringIO()
+
+    listOfDict = productDto.getAllRank()
+    keys = listOfDict[0].keys()
+
+    dw = csv.DictWriter(stream,keys)
+    dw.writeheader()
+    dw.writerows(listOfDict)
+    response = StreamingResponse(iter([stream.getvalue()]),
+                        media_type="text/csv"
+    )
+
+    response.headers["Content-Disposition"] = "attachment; filename=export.csv"
+
+    return response

@@ -109,6 +109,7 @@ class Product(Base):
     stock: Mapped[int]
     imgurl: Mapped[Optional[str]]
     description: Mapped[Optional[str]]
+    sale: Mapped[int] = mapped_column(default=0)
 
     visits: Mapped[list["Visit"]] = relationship(
         back_populates="product", cascade="all, delete-orphan"
