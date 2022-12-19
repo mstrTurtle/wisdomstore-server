@@ -108,23 +108,17 @@ async def pic(fname):
 
 @app.get('/register')
 async def register(name, password, email, role):
+    '''注册用户的api'''
     try:
-        # dto = Dto(createEngineWithCreateAll(Base))
-        # global dto
         dto.addUser(name,password,email,role)
-        # dto.testInsertAndQuery()
-        # global i
-        # i+=1
         return {'status':'Ok','name':name}
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
 
 @app.get('/login')
 async def login(name, password):
+    '''登录的api'''
     try:
-        # dto = Dto(createEngineWithCreateAll(Base))
-        # global dto
-        # dto.addUser(name,password,email,role)
         ret =  dto.getAllUsers()
         user = (dto.getUserByName(name))
         print(ret)
@@ -134,11 +128,6 @@ async def login(name, password):
             return {'status':'Ok','name':name,'user_id':user.id}
         else:
             return {'status':'Fail'}
-        return ret
-        dto.testInsertAndQuery()
-        # global i
-        # i+=1
-        return {'status':'Ok','name':name}
     except Exception as e:
         return {'status':'Fail','reason':repr(e)}
 
@@ -285,14 +274,13 @@ import csv
     
 @app.get("/get_csv")
 async def get_csv():
-
-
+    '''下载销售排行榜的api'''
     stream = io.StringIO()
 
-    listOfDict = productDto.getAllRank()
+    listOfDict = productDto.getAllRank() # 从Product DTO获取排行表
     keys = listOfDict[0].keys()
 
-    dw = csv.DictWriter(stream,keys)
+    dw = csv.DictWriter(stream,keys) # 转为csv并以attachment返回
     dw.writeheader()
     dw.writerows(listOfDict)
     response = StreamingResponse(iter([stream.getvalue()]),

@@ -16,16 +16,23 @@ emconfig={}
 
 
 class EmailLogger:
+    '''
+        电子邮件模块专用的日志类
+    '''
     logpath = None
 
     @classmethod
     def log(cls, text):
+        '''
+            将text追加到cls.logpath文件中
+        '''
         if not cls.logpath:
             cls.logpath = 'email.log'
             print('LogPath Error. Auto output to "email.log"')
         with open(cls.logPath, 'ab+') as f:
             f.write(f'{text}\n'.encode(encoding='utf8'))
 
+# 加载em_config.json配置文件
 try:
     with open('em_config.json') as f:
         s = f.read()
