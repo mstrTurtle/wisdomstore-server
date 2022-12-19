@@ -6,6 +6,8 @@ from sqlalchemy import text
 
 from datetime import datetime
 
+from service.em import sendEmailSerivce
+
 class OrderDto:
     def __init__(self,engine) -> None:
         self.engine = engine
@@ -44,6 +46,7 @@ class OrderDto:
             if a.finishTime:
                 raise Exception('Cannot finish twice')
             a.finishTime = datetime.now().isoformat()
+            sendEmailSerivce(a.user.email, 'Order done')
             session.commit()
     
     def unFinishOrder(self,order_id):
@@ -54,6 +57,7 @@ class OrderDto:
             if not a.finishTime:
                 raise Exception('Cannot unfinish twice')
             a.finishTime = None
+            sendEmailSerivce(a.user.email, 'Order done canceled')
             session.commit()
 
     def getOrderDetailByUserId(self,user_id):

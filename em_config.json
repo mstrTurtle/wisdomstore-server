@@ -1,0 +1,6 @@
+{
+    "logPath":"email.log",
+    "host":"smtp.163.com",
+    "user":"user@example.com",
+    "passwd":"YOUR PASSWORD"
+}
